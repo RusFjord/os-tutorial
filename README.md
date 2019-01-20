@@ -20,74 +20,70 @@
 Также можно обратиться к ресурсу "[Маленькая книга по разработке ОС](https://littleosbook.github.io)" и к руководству 
 Джеймса Моллоя "[Руководство по разработке ядра](https://web.archive.org/web/20160412174753/http://www.jamesmolloy.co.uk/tutorial_html/index.html)."
 
-Features
+Особенности Features
 --------
 
-- This course is a code tutorial aimed at people who are comfortable with low level computing. For example,
-programmers who have curiosity on how an OS works but don't have the time or willpower to start reading the Linux kernel
-top to bottom.
-- There is little theory. Yes, this is a feature. Google is your theory lecturer. Once you pass college, 
-excessive theory is worse than no theory because it makes things seem more difficult than they really are.
-- The lessons are tiny and may take 5-15 minutes to complete. Trust me and trust yourself. You can do it!
+- Этот курс является руководством по коду, ориентированном на людей, которым нравится заниматься компьютером на низком 
+уровне. Например, программистам, интересующимся тем, как работает ядро, но не имеющим достаточно времени или сил  
+изучать ядро линукса  с начала до конца.
+- Совсем немного теории. Да, это особенность. Google ваш лектор. Однажды вы закончите колледж, чрезмерно теории хуже,
+чем совсем без теории, потому что она делает вещи более сложными, чем они есть на самом деле.
+- Уроки очень маленькие, на них требуется от 5 до 15 минут. Верьте мне и поверьте в себя. Вы можете это сделать.
 
-
-How to use this tutorial
+Как использовать это руководство
 ------------------------
 
-1. Start with the first folder and go down in order. They build on previous code, so if 
-you jump right to folder 05 and don't know why there is a `mov ah, 0x0e`, it's because you missed lecture 02.
-Really, just go in order. You can always skip stuff you already know.
+1. Начинайте с первой папки и двигайтесь вниз по порядку. Порядок очень важен, и если вы перейдете сразу к 
+5 папке, то не сможете понять почему здесь `mov ah, 0x0e`, так как пропустили 2 папку.
 
-2. Open the README and read the first line, which details the concepts you should be familiar with
-before reading the code. Google concepts you are not familiar with. The second line states the goals for each lesson. 
-Read them, because they explain why we do what we do. The "why" is as important as the "how".
+2. Откройте README и прочитайте первые строки. Там расположены детали концепции, которые надо знать перед прочтением
+кода. Google поможет изучить незнакомые вам понятия. На следующих строках находятся цели каждого урока. Прочитайте их!
+Они объяснят почему мы делаем то, что делаем. "Почему" и "как" два самых важных слова. 
  
-3. Read the rest of the README. It is **very concise**.
+3. Прочитайте оставшуюся часть README. Там все написано **достаточно кратко**.
 
-4. (Optional) Try to write the code files by yourself after reading the README.
+4. (Опционально) Попытайтесь написать код самостоятельно после прочтения README.
 
-5. Look at the code examples. They are extremely well commented.
+5. Изучите примеры кода. Они максимально комментированы.
 
-6. (Optional) Experiment with them and try to break things. The only way to make sure you understood something is
-trying to break it or replicate it with different commands.
+6. (Опционально) Экспериментируйте с ними, пытайтесь их сломать. Единственный способ убедиться, что вы что-то поняли, 
+это пытаясь сломать его или воспроизвести с помощью других команд.
 
+А теперь кратко. Читайте README прежде файлов с кодом и, если чувствуете в себе смелось, пробуйте написать 
+самостоятельно.
 
-TL;DR: First read the README on each folder, then the code files. If you're brave, try to code them yourself.
-
-
-Strategy
+Стратегия
 --------
 
-We will want to do many things with our OS:
+Я хотел бы сделать многое с нашей ОС:
 
-- Boot from scratch, without GRUB - DONE!
-- Enter 32-bit mode - DONE
-- Jump from Assembly to C - DONE!
-- Interrupt handling - DONE!
-- Screen output and keyboard input - DONE!
-- A tiny, basic `libc` which grows to suit our needs - DONE!
-- Memory management
-- Write a filesystem to store files
-- Create a very simple shell
-- User mode
-- Maybe we will write a simple text editor
-- Multiple processes and scheduling
+- Загрузка с нуля без GRUB - Готово
+- Подключение 32-битного режима - Готово
+- Переход с ассемблера на си - Готово
+- Обработка прерываний - Готово
+- Вывод на экран и ввод с клавиатуры - Готово
+- Базовая библиотека `libc`, которая будет расти при росте потребностей - Готово
+- Управление памятью
+- Написание файловой системы для хранения файлов
+- Созданиеочень простой командной оболочки
+- Пользовательский режим
+- Может быть мы напишем простой текстовый редактор
+- Несколько процессов и планирование
 
-Probably we will go through them in that order, however it's soon to tell.
+Вероятно, мы пройдем их в таком порядке, однако скоро это увидим.
 
-If we feel brave enough:
+Если почувствуем себя достаточно смелыми, то:
 
-- A BASIC interpreter, like in the 70s!
-- A GUI
-- Networking
+- Интерпретатор языка Бейсик, как в 70-х годах
+- Графический интерфейс
+- Работа с сетью
 
-
-
-Contributing
+Содействие
 ------------
+Это персональный учебный проект и, хотя он давно не обновлялся, у меня есть надежда вернуться к нему.
 
-This is a personal learning project, and even though it hasn't been updated for a long time, I still have hopes to get into it at some point.
+Благодарю всех тех, кто указал на ошибки и отправил пулл реквесты. Мне нужно некоторое время для просмотра 
+и я не гарантирую, что это будет сейчас
 
-I'm thankful to all those who have pointed out bugs and submitted pull requests. I will need some time to review everything and I cannot guarantee that at this moment.
-
-Please feel free to fork this repo. If many of you are interested in continuing the project, let me know and I'll link the "main fork" from here.
+Свободно форкайте этот репозиторий. Если многие из вас заинтересуются в продолжении проекта, дайте мне знать и я
+оставлю ссылку на ваш репозиторий, как на главный форк.
