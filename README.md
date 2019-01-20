@@ -1,25 +1,24 @@
-os-tutorial
+Руководство по написанию ОС
 ===========
 
-How to create an OS from scratch!
+Напишем ОС с нуля!
 
-I have always wanted to learn how to make an OS from scratch. In college I was taught
-how to implement advanced features (pagination, semaphores, memory management, etc)
-but:
+Я всегда хотел узнать как создать операционную систему с нуля. В колледже меня учили 
+как включать продвинутые возможности (сегментация, семафоры, управление памятью и т.д.)
+но:
 
-- I never got to start from my own boot sector
-- College is hard so I don't remember most of it.
-- I'm fed up with people who think that reading an already existing kernel, even if small, is 
-a good idea to learn operating systems.
+- Я никогда не начинал со своего собственного загрузочного сектора
+- В колледже большая нагрузка, поэтому я не помню большую часть из того, что преподавали.
+- Я сыт по горло людьми, которые думают что чтение уже существующего ядра, даже если оно
+маленькое, хорошая идея для изучения операционных систем.
 
-Inspired by [this document](http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf)
-and the [OSDev wiki](http://wiki.osdev.org/), I'll try to make short step-by-step READMEs and
-code samples for anybody to follow. Honestly, this tutorial is basically the first document but
-split into smaller pieces and without the theory.
+Вдохновленный статьей "[Написание простой операционной системы с нуля](http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf)"
+Ника Блюндела и проектом [OSDev wiki](http://wiki.osdev.org/) я буду пытаться создать короткие 
+пошаговые README и примеры кода для любого последователя. Честно говоря, этот учебник простой документ, разбитый
+на маленькие кусочки и без теории.
 
-Updated: more sources: [the little book about OS development](https://littleosbook.github.io),
-[JamesM's kernel development tutorials](https://web.archive.org/web/20160412174753/http://www.jamesmolloy.co.uk/tutorial_html/index.html)
-
+Также можно обратиться к ресурсу "[Маленькая книга по разработке ОС](https://littleosbook.github.io)" и к руководству 
+Джеймса Моллоя "[Руководство по разработке ядра](https://web.archive.org/web/20160412174753/http://www.jamesmolloy.co.uk/tutorial_html/index.html)."
 
 Features
 --------
