@@ -1,13 +1,16 @@
-*Concepts you may want to Google beforehand: linux, mac, terminal, compiler, emulator, nasm, qemu*
+*Концепции, которые вам потребуется изучить сначала: linux, терминал, компилятор, эмулятор, nasm, qemu*
 
-**Goal: Install the software required to run this tutorial**
+**Цель: Установить ПО, требуемое для прохождения этого руководства**
 
-I'm working on a Mac, though Linux is better because it will have all the standard tools already
-available for you.
+Для дальнейшей работы вам потребуется ассемблер и эмулятор для запуска. В руководстве используются следующие программы:
+* Ассемблер [nasm](https://www.opennet.ru/docs/RUS/nasm/) 
+* Эмулятор [qemu](https://www.ibm.com/developerworks/ru/library/l-qemu/index.html)
 
-On a mac, [install Homebrew](http://brew.sh) and then `brew install qemu nasm`
+Чтобы установить вышеуказанный софт необходимо в терминале выполнить команду:
+`sudo apt install nasm qemu`
 
-Don't use the Xcode developer tools `nasm` if you have them installed, they won't work for the most cases. Always use `/usr/local/bin/nasm`
+На некоторых системах, в частности при установке пакета qemu в Ubuntu, есть несколько вариантов подготовленных 
+конфигураций. Поэтому нужно запускать `qemu-system-x86_64 'Ваш бинарный файл'`
 
-On some systems qemu is split into multiple binaries. You may want
-to call `qemu-system-x86_64 binfile`
+***Примечания переводчика**:* Весь код проекта я запускаю на Ubuntu. Мака у меня нет, поэтому, сознательно, опускаю 
+все подробности, связанные с маком.
