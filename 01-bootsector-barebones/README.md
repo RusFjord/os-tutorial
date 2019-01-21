@@ -1,62 +1,54 @@
-*Concepts you may want to Google beforehand: assembler, BIOS*
+*Концепции, которые можно изучить сначала: ассемблер, BIOS*
 
-**Goal: Create a file which the BIOS interprets as a bootable disk**
+**Цель: Создать файл, который BIOS интрепетирует как загрузочный диск**
 
 This is very exciting, we're going to create our own boot sector!
 
-Theory
+Теория
 ------
 
-When the computer boots, the BIOS doesn't know how to load the OS, so it
-delegates that task to the boot sector. Thus, the boot sector must be
-placed in a known, standard location. That location is the first sector
-of the disk (cylinder 0, head 0, sector 0) and it takes 512 bytes.
+Когда компьютер запускается BIOS не знает как загрузить операционную систему. Эта задача перекладывается на загрузочный
+сектор диска. Таким образом он (загрузочный сектор) должен быть расположен в стандартном известном месте. Таким местом
+является первый сектор диска (цилиндр 0, головка 0, сектор 0). Размер сектора 512 байт.
 
-To make sure that the "disk is bootable", the BIOS checks that bytes
-511 and 512 of the alleged boot sector are bytes `0xAA55`.
+Чтобы удостовериться, что диск является загрузочным, BIOS проверяет 511 и 512 байты. Если они равны `0x55` и `0xAA` 
+тогда все верно.
 
-This is the simplest boot sector ever:
+Это самый простой загрузочный сектор:
 
 ```
 e9 fd ff 00 00 00 00 00 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 29 more lines with sixteen zero-bytes each ]
+[ Еще 29 строк по 16 нулевых байтов ]
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 55 aa
 ```
 
-It is basically all zeros, ending with the 16-bit value
-`0xAA55` (beware of endianness, x86 is little-endian). 
-The first three bytes perform an infinite jump
+Здесь в основном все нули, заканчивающиеся 16-битным магическим числом
+`0xAA55` (внимание при использовании, сначала идет младший байт, а потом старший). 
+Первые три байта отправляют программу в бесконечный цикл
 
-Simplest boot sector ever
+Самый простой загрузочный сектор
 -------------------------
-
-You can either write the above 512 bytes
-with a binary editor, or just write a very
-simple assembler code:
+Вы можете как написать все 512 байт с помощью двоичного редактора, так и использовать простейший ассемблерный код:
 
 ```nasm
-; Infinite loop (e9 fd ff)
+; Бесконечный цикл (e9 fd ff)
 loop:
     jmp loop 
 
-; Fill with 510 zeros minus the size of the previous code
+; Заполнить (510 - размер предыдущего кода) байт нулями
 times 510-($-$$) db 0
-; Magic number
+; Магическое число
 dw 0xaa55 
 ```
 
-To compile:
+Скомпилировать файл:
+
 `nasm -f bin boot_sect_simple.asm -o boot_sect_simple.bin`
 
-> OSX warning: if this drops an error, read chapter 00 again
+Я знаю, вы хотите попробовать что вышло (Я хочу!). Давайте сделаем это:
 
-I know you're anxious to try it out (I am!), so let's do it:
+`qemu-system-x86_64 boot_sect_simple.bin`
 
-`qemu boot_sect_simple.bin`
-
-> On some systems, you may have to run `qemu-system-x86_64 boot_sect_simple.bin` If this gives an SDL error, try passing the --nographic and/or --curses flag(s).
-
-You will see a window open which says "Booting from Hard Disk..." and
-nothing else. When was the last time you were so excited to see an infinite
-loop? ;-)
+В открывшемся окне появляется надпись: "Booting from Hard Disk..." и ничего не происходит больше. Когда в последний 
+раз вы были так рады видеть бесконечный цикл? ;-)
