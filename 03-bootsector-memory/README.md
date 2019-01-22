@@ -1,63 +1,57 @@
-*Concepts you may want to Google beforehand: memory offsets, pointers*
+*Концепции, которые можно изучить сначала: смещение памяти, указатели*
 
-**Goal: Learn how the computer memory is organized**
+**Цель: Изучить организацию памяти компьютера**
 
-Please open page 14 [of this document](
-http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf)<sup>1</sup>
-and look at the figure with the memory layout.
+Откройте 14 страницу [этого документа](http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf)<sup>1</sup>
+и рассмотрите иллюстрацию со слоями памяти.
 
-The only goal of this lesson is to learn where the boot sector is stored
+Цель этого урока изучить расположение в памяти загрузочного сектора.
 
-I could just bluntly tell you that the BIOS places it at `0x7C00` and
-get it done with, but an example with wrong solutions will make things clearer.
+Я мог бы прямо сказать, что BIOS помещает код по адресу `0x7C00` и покончить с этим, но пример с неправильными решениями
+сделает это яснее.
 
-We want to print an X on screen. We will try 4 different strategies
-and see which ones work and why.
+Мы хотим вывести на экран символ 'X'. Для этого применим 4 разные стратегии и посмотрим какая из них работает и почему.
 
-**Open the file `boot_sect_memory.asm`**
+**Откройте файл `boot_sect_memory.asm`**
 
-First, we will define the X as data, with a label:
+Для начала надо определить 'X' как данные с меткой:
 ```nasm
 the_secret:
     db "X"
 ```
-
-Then we will try to access `the_secret` in many different ways:
+Попробуем получить доступ к `the_secret` разными путями:
 
 1. `mov al, the_secret`
 2. `mov al, [the_secret]`
 3. `mov al, the_secret + 0x7C00`
-4. `mov al, 2d + 0x7C00`, where `2d` is the actual position of the 'X' byte in the binary
+4. `mov al, 2d + 0x7C00`, где `2d` актуальный адрес 'X' в двоичном файле
 
-Take a look at the code and read the comments.
+Рассмотрите код и прочитайте комментарии.
 
-Compile and run the code. You should see a string similar to `1[2¢3X4X`, where
-the bytes following 1 and 2 are just random garbage.
+Скомпилируйте и запустите код. Вы сможете увидеть строку, похожую на `1[2¢3X4X`. Байты, следующие за 1 и 2 являются
+просто случайным мусором.
 
-If you add or remove instructions, remember to compute the new offset of the X
-by counting the bytes, and replace `0x2d` with the new one.
+Вычислите новое смещение и замените `0x2d` новым значением, если вы удаляете или добавляете инструкции.
 
-Please don't continue onto the next section unless you have 100% understood
-the boot sector offset and memory addressing.
+Пожалуйста, не переходите к новой секции, до тех пор, пока вы на 100% не поймете смещение загрузочного сектора и
+адресацию памяти.
 
-
-The global offset
+Глобальное смещение
 -----------------
 
-Now, since offsetting `0x7c00` everywhere is very inconvenient, assemblers let
-us define a "global offset" for every memory location, with the `org` command:
+Так как использовать смещение `0x7c00` в каждой команде очень неудобно, синтаксис ассемблера позволяет определить 
+"глобальное смещение", использовав команду `org`:
 
 ```nasm
 [org 0x7c00]
 ```
 
-Go ahead and **open `boot_sect_memory_org.asm`** and you will see the canonical
-way to print data with the boot sector, which is now attempt 2. Compile the code
-and run it, and you will see how the `org` command affects each previous solution.
+Далее **откройте файл `boot_sect_memory_org.asm`** и вы увидите канонический способ вывода символов из загрузочного
+сектора. Скомпилируйте и выполните этот код. Вы увидите как команда `org` влияет на каждое решение
 
-Read the comments for a full explanation of the changes with and without `org`
+Прочитайте комментарии для полного понимания использования команды `org`
 
 -----
 
-[1] This whole tutorial is heavily inspired on that document. Please read the
-root-level README for more information on that.
+[1] Все данное руководство появилось благодаря этому документу. Перечитайте, если нужно, README корневого уровня
+для получения большей информации о нем.
