@@ -1,28 +1,23 @@
-*Concepts you may want to Google beforehand: interrupts, CPU
-registers*
+*Концепции, которые можно изучить сначала: исключения, регистры процессора*
 
-**Goal: Make our previously silent boot sector print some text**
+**Цель: Добавить в предыдущий тихий загрузочный сектор вывод на экран чуть-чуть текста**
 
-We will improve a bit on our infinite-loop boot sector and print
-something on the screen. We will raise an interrupt for this.
+Мы немного улучшим наш загрузочный сектор с бесконечным циклом и выведем что-нибудь на экран. Для этого будем 
+использовать исключения.
 
-On this example we are going to write each character of the "Hello"
-word into the register `al` (lower part of `ax`), the bytes `0x0e`
-into `ah` (the higher part of `ax`) and raise interrupt `0x10` which
-is a general interrupt for video services.
+В этом примере мы собираемся поместим каждый символ слова "Hello" в регистр `al` (который является младшим байтом 
+регистра `ax`), а также байт `0x0E` в `ah` (старшая часть `ax`) и вызовем исключение `0x10`, являющееся главным 
+исключением видео-службы.
 
-`0x0e` on `ah` tells the video interrupt that the actual function
-we want to run is to 'write the contents of `al` in tty mode'.
+`0x0e` в `ah` это вызов функции, требующей вывести содержимое `al` в режиме телетайпа (tty) на экран.
 
-We will set tty mode only once though in the real world we 
-cannot be sure that the contents of `ah` are constant. Some other
-process may run on the CPU while we are sleeping, not clean
-up properly and leave garbage data on `ah`.
+Режим телетайпа устанавливается лишь один раз, хотя в реальности, мы не можем быть уверены, что содержимое `ah`
+постоянно. Другие процессы могу использовать процессор, пока мы в режиме сна, не очищая регистр и оставляя в нем мусор.
 
-For this example we don't need to take care of that since we are
-the only thing running on the CPU.
+Но для текущего примера нам не нужно заботиться об этом, так как наша программа это единственное, что выполняется
+сейчас на ЦП.
 
-Our new boot sector looks like this:
+Наш загрузочный сектор теперь выглядит так:
 ```nasm
 mov ah, 0x0e ; tty mode
 mov al, 'H'
@@ -31,23 +26,23 @@ mov al, 'e'
 int 0x10
 mov al, 'l'
 int 0x10
-int 0x10 ; 'l' is still on al, remember?
+int 0x10 ; 'l' уже в регистре, помните?
 mov al, 'o'
 int 0x10
 
-jmp $ ; jump to current address = infinite loop
+jmp $ ; переход на текущий адрес = бесконечному циклу
 
-; padding and magic number
+; так же добавляем оставшиеся нули и магическое число 
 times 510 - ($-$$) db 0
 dw 0xaa55 
 ```
 
-You can examine the binary data with `xxd file.bin`
-
-Anyway, you know the drill:
+Компилируем и запускаем:
 
 `nasm -fbin boot_sect_hello.asm -o boot_sect_hello.bin`
 
-`qemu boot_sect_hello.bin`
+`qemu-system-x86_64 boot_sect_hello.bin`
 
-Your boot sector will say 'Hello' and hang on an infinite loop
+Можно исследовать двоичный файл: `xxd boot_sect_hello.bin`
+
+Ваш загрузочный сектор сказал 'Hello' и повис в бесконечном цикле
