@@ -1,15 +1,13 @@
-*Concepts you may want to Google beforehand: stack*
+*Концепции, которые можно изучить сначала: стек*
 
-**Goal: Learn how to use the stack**
+**Цель: Изучить использование стека**
 
-The usage of the stack is important, so we'll write yet another boot sector
-with an example.
+Использование стека очень важно и поэтому мы напишем еще один загрузочный сектор для примера
 
-Remember that the `bp` register stores the base address (i.e. bottom) of the stack,
-and `sp` stores the top, and that the stack grows downwards from `bp` (i.e. `sp` gets
-decremented)
+Запомните, регистр `bp` хранит базовый адрес стека (то есть низ), а `sp` - вершину стека, а также то,
+что стек растет вниз. (т.е. `sp` уменьшается)
 
-This lesson is quite straightforward, so jump ahead to the code.
+Этот урок довольно прост. Переходите сразу к коду.
 
-I suggest that you try accessing in-stack memory addresses by yourself, 
-at different points in the code, and see what happens.
+Я предлагаю вам попробовать получить доступ к адресам памяти в стеке самостоятельно,
+в разных точках кода, и посмотрим, что произойдет.
