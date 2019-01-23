@@ -1,25 +1,22 @@
-*Concepts you may want to Google beforehand: segmentation*
+*Концепции, которые можно изучить сначала: сегментация*
 
-**Goal: learn how to address memory with 16-bit real mode segmentation**
+**Цель: Изучить адресацию памяти в 16-битном реальном режиме сегментации**
 
-If you are comfortable with segmentation, skip this lesson.
+Если вам все ясно по сегментации, можете пропустить этот урок.
 
-We did segmentation
-with `[org]` on lesson 3. Segmentation means that you can specify
-an offset to all the data you refer to.
+Мы сделали сегментацию с помощью `[org]` в третьем уроке. Сегментация это возможность указать 
+смещение ко всем данным на которые вы ссылаетесь.
+Есть специальные регистры: `cs`, `ds`, `ss` and `es`, для
+кода, данных, стека и экстра (назначаемый пользователем)
 
-This is done by using special registers: `cs`, `ds`, `ss` and `es`, for
-Code, Data, Stack and Extra (i.e. user-defined)
+Внимание: все эти регистры *неявно* используются процессором. Установив некоторое значение, скажем
+в регистре `ds`, то весь доступ к памяти будет смещен, начинаяcm со значения в регистре.
+[Прочитайте про сегментацию здесь](http://wiki.osdev.org/Segmentation)
 
-Beware: they are *implicitly* used by the CPU, so once you set some
-value for, say, `ds`, then all your memory access will be offset by `ds`.
-[Read more here](http://wiki.osdev.org/Segmentation)
+Кроме того, чтобы вычислить реальный адрес, мы не просто соединяем два адреса, а как бы *перекрываем* их: 
+`segment << 4 + address`. Для примера,
+если `ds` равен `0x4d`, тогда адрес `[0x20]` будет указывать на `0x4d0 + 0x20 = 0x4f0`
 
-Furthermore, to compute the real address we don't just join the two
-addresses, but we *overlap* them: `segment << 4 + address`. For example,
-if `ds` is `0x4d`, then `[0x20]` actually refers to `0x4d0 + 0x20 = 0x4f0`
+Достаточно теории. Поиграйтесь немного с кодом в примере.
 
-Enough theory. Have a look at the code and play with it a bit.
-
-Hint: We cannot `mov` literals to those registers, we have to
-use a general purpose register before.
+Совет: Мы не можем напрямую присвоить значение в эти регистры с помощью `mov`. Используйте общие регистры.
