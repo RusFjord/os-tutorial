@@ -1,31 +1,25 @@
-*Concepts you may want to Google beforehand: 32-bit protected mode, VGA, video 
-memory*
+*Концепции, которые можно изучить сначала: 32-битный защищенный режим, VGA, видеопамять*
 
-**Goal: Print on the screen when on 32-bit protected mode**
+**Цель: Вывод на экран при включенном 32-битном защищенном режиме**
 
-32-bit mode allows us to use 32 bit registers and memory addressing, 
-protected memory, virtual memory and other advantages, but we will lose
-BIOS interrupts and we'll need to code the GDT (more on this later)
+32-битный режим позволяет нам использовать 32-битные регистры и адресацию памяти,
+защищенную память, виртуальную память и другие преимущества, но мы потеряем доступ к
+прерываниям BIOS , и нам нужно будет подготовить GDT (подробнее об этом позже)
 
-In this lesson we will write a new print string routine which works in
-32-bit mode, where we don't have BIOS interrupts, by directly manipulating
-the VGA video memory instead of calling `int 0x10`. The VGA memory starts
-at address `0xb8000` and it has a text mode which is useful to avoid
-manipulating direct pixels.
+В этом уроке мы создадим вывод строки, работающий в 32-битном режиме. В этом режиме нам 
+недоступны прерывания BIOS. Придется манипулировать видеопамятью вместо использования
+`int 0x10`. Память VGA начинается с адреса `0xb8000`. Текстовый режим помогает избежать
+работы непосредственно с пикселями.
 
+Формула для доступа к текстовой сетке 80х25 чрезвычайно проста:
+`0xb8000 + 2 * (номер_строки * 80 + номер_солонки)`
 
-The formula for accessing a specific character on the 80x25 grid is:
+Каждый символ здесь кодируется 2-мя байтами. Один из них используется для ASCII кода, а
+второй для цвета и т.п. Сразу видно, как сетка преобразована в линейный массив памяти.
 
-`0xb8000 + 2 * (row * 80 + col)`
+Откройте `32bit-print.asm` и взгляните на код. Печать начинается с левого верхнего угла 
+экрана. Но все же мы скоро заменим этот код на более высокоуровневый.
 
-That is, every character uses 2 bytes (one for the ASCII, another for 
-color and such), and we see that the structure of the memory concatenates
-rows.
-
-Open `32bit-print.asm` to see the code. It will always print the string
-on the top left of the screen, but soon we'll write higher level routines
-to replace it.
-
-Unfortunately we cannot yet call this routine from the bootloader, because
-we still don't know how to write the GDT and enter protected mode. Once
-you have understood the code, jump to the next lesson.
+К сожалению пока невозможно запустить этот код, так как у нас все еще не настроена таблица 
+дескрипторов и мы, пока, не вошли в защищенный режим. Переходите к следующему уроку. Скоро
+все получится.
