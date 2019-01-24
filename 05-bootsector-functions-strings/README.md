@@ -1,37 +1,33 @@
-*Concepts you may want to Google beforehand: control structures,
-function calling, strings*
+*Концепции, которые можно изучить сначала:: управляющие конструкции,
+вызовы функций, строки*
 
-**Goal: Learn how to code basic stuff (loops, functions) with the assembler**
+**Цель: Изучить как кодировать основные конструкции (циклы, функции) в ассемблере**
 
-We are close to our definitive boot sector.
+Закроем наш последний загрузочный сектор.
 
-In lesson 7 we will start reading from the disk, which is the last step before
-loading a kernel. But first, we will write some code with control structures,
-function calling, and full strings usage. We really need to be comfortable with
-those concepts before jumping to the disk and the kernel.
+В 7 уроке мы начнем читать с диска, последний шаг перед загрузкой ядра. Но прежде, напишем немного кода с 
+использованием управляющих конструкций, вызовов функций и поработаем с целыми строками. Просто необходимо, для полного
+комфорта, познакомиться с этимим концепциями. А после перейдем к диску и ядру.
 
-
-Strings
+Строки
 -------
 
-Define strings like bytes, but terminate them with a null-byte (yes, like C)
-to be able to determine their end.
+Определите строки побайтно и обязательно, в конце строки, поставьте нулевой байт (прямо как в си) для того, чтобы
+точно определить ее окончание.
 
 ```nasm
 mystring:
     db 'Hello, World', 0
 ```
+Обратите внимание, что текст, заключенный в кавычки, конвертируется ассемблером в ASCII, в то время как одиночный
+ноль является байтом `0x00`.
 
-Notice that text surrounded with quotes is converted to ASCII by the assembler,
-while that lone zero will be passed as byte `0x00` (null byte)
-
-
-Control structures
+Управляющие конструкции
 ------------------
 
-We have already used one: `jmp $` for the infinite loop.
+Ранее уже была использована одна: `jmp $` для бесконечного цикла
 
-Assembler jumps are defined by the *previous* instruction result. For example:
+Переход, определяющийся результатом проверки условия (аналог if...else):
 
 ```nasm
 cmp ax, 4      ; if ax = 4
@@ -50,23 +46,27 @@ else:
 endif:
 ```
 
-Think in your head in high level, then convert it to assembler in this fashion.
+Думайте на высоком уровне и преобразовывайте, таким образом, в команды ассемблера.
 
-There are many `jmp` conditions: if equal, if less than, etc. They are pretty 
-intuitive but you can always Google them
+Есть много условий для `jmp`: если равно, если меньше чем, и т.п. Они красивые и интуитивно понятные. А самое главное
+их всегда можно найти с помощью Google.
+
+>***Примечания переводчика**:* можно посмотреть на странице [условные и безусловные переходы](http://asmworld.ru/uchebnyj-kurs/016-uslovnye-i-bezuslovnye-perexody/) 
+учебника по ассемблеру 
 
 
-Calling functions
+Вызов функций
 -----------------
 
-As you may suppose, calling a function is just a jump to a label.
+Как вы можете предположить, вызов функций это простой переход к метке.
 
-The tricky part are the parameters. There are two steps to working with parameters:
+Сложной частью являются параметры. Есть два варианта работы с ними:
 
-1. The programmer knows they share a specific register or memory address
-2. Write a bit more code and make function calls generic and without side effects
+1. Программист может использовать специальные регистры, либо адреса в памяти.
+2. Написать больше кода для того чтобы сделать вызовы функций обобщенными и этим избавиться от проблем.
 
-Step 1 is easy. Let's just agree that we will use `al` (actually, `ax`) for the parameters.
+Первый вариант очень простой. Давайте придем к соглашению, что будем использовать `al` (на самом деле `ax`) для 
+параметров. Например:
 
 ```nasm
 mov al, 'X'
@@ -76,60 +76,51 @@ endprint:
 ...
 
 print:
-    mov ah, 0x0e  ; tty code
-    int 0x10      ; I assume that 'al' already has the character
-    jmp endprint  ; this label is also pre-agreed
+    mov ah, 0x0e  ; tty режим
+    int 0x10      ; предполагаем, что в 'al' уже содержится необходимый символ
+    jmp endprint  ; эта метка также считается предварительно согласованной
 ```
 
-You can see that this approach will quickly grow into spaghetti code. The current
-`print` function will only return to `endprint`. What if some other function
-wants to call it? We are killing code reusage.
+Уже сейчас можно заметить, что вскоре код превратится в спагетти. Текущая функция `print` будет возвращаться всегда
+в одну и ту же точку - `endprint`. А что если в другом участке кода необходимо ее вызвать. Вышеприведенным кодом мы 
+убиваем повторное использование нашего кода.
 
-The correct solution offers two improvements:
+Правильное решение предлагает два улучшения:
 
-- We will store the return address so that it may vary
-- We will save the current registers to allow subfunctions to modify them
-  without any side effects
+- Мы будем сохранять обратный адрес для возвращения в нужную точку.
+- Мы сохраним текущие значения регистров, чтобы случайно их не изменить, убрав некоторые побочные эффекты.
 
-To store the return address, the CPU will help us. Instead of using a couple of
-`jmp` to call subroutines, use `call` and `ret`.
+Процессор поможет нам сохранять обратный адрес. Вместо использования пары `jmp` мы применим команды `call` и `ret`
 
-To save the register data, there is also a special command which uses the stack: `pusha`
-and its brother `popa`, which pushes all registers to the stack automatically and
-recovers them afterwards.
+Для сохранения и восстановления значений регистров тоже есть специальные команды, которые используют стек: `pusha`
+и `popa`. Первая команда помещает все регистры в стек, а вторая - вытаскивает их обратно.
 
-
-Including external files
+Подключение внешних файлов
 ------------------------
 
-I assume you are a programmer and don't need to convince you why this is
-a good idea.
+Я предполагаю, что вы программист, и мне не нужно убеждать вас, почему это хорошая идея.
 
-The syntax is
+Синтаксис включения прост:
 ```nasm
 %include "file.asm"
 ```
 
-
-Printing hex values
+Печать шестнадцатиричных значений
 -------------------
 
-In the next lesson we will start reading from disk, so we need some way
-to make sure that we are reading the correct data. File `boot_sect_print_hex.asm`
-extends `boot_sect_print.asm` to print hex bytes, not just ASCII chars.
+На следующем уроке мы начнем читать с диска, поэтому нам нужен какой-то способ
+чтобы убедиться, что мы читаем правильные данные. Файл `boot_sect_print_hex.asm`
+расширяет `boot_sect_print.asm` для вывода шестнадцатеричных байтов, а не только символов ASCII.
 
-
-Code! 
+Код! 
 -----
 
-Let's jump to the code. File `boot_sect_print.asm` is the subroutine which will
-get `%include`d in the main file. It uses a loop to print bytes on screen.
-It also includes a function to print a newline. The familiar `'\n'` is
-actually two bytes, the newline char `0x0A` and a carriage return `0x0D`. Please
-experiment by removing the carriage return char and see its effect.
+Позвольте перейти к коду. Файл `boot_sect_print.asm` это подпрограмма, которая подключается с помощью `%include`
+в основном файле. Он использует цикл для вывода байтов на экран, а также добавляет переход на новую строку. Знакомый
+символ `'\n'` состоит из двух байт: перевод на новую строку - `0x0A` и возврат каретки в начало строки - `0x0D`.
+Поэкспериментируйте, удалив возврат каретки, и вы увидите какой будет эффект.
 
-As stated above, `boot_sect_print_hex.asm` allows for printing of bytes.
+Как указано выше, `boot_sect_print_hex.asm` позволяет печатать байты.
 
-The main file `boot_sect_main.asm` loads a couple strings and bytes,
-calls `print` and `print_hex` and hangs. If you understood
-the previous sections, it's quite straightforward.
+Основной файл `boot_sect_main.asm` вызывает `print` и` print_hex` и зависает. Если вы поняли
+предыдущие разделы, это довольно просто.
